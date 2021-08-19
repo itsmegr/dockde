@@ -1,0 +1,17 @@
+#docker-compose is a way of scripting the docker commands so we can build and run multiple containers and connect with each other
+version: "3" #this is version of docker compose
+services: 
+  node-app : #name of the service, or containers 
+    build: . #for biulding the image, need path for dockerfile
+    ports:   #require the port of host : port of container
+      - "5000:3000"
+    volumes: #reuires volumes
+      - ./:/app #this says this directory is in sync with /app directory of container
+      - /app/node_modules #this says make everythings in sync except node_modules
+    environment: #this is for supllying env variable from here only
+      - PORT=3000
+    env_file: #include the env files
+      - ./.env
+
+
+#in docker-compose file we put the config that is going to be same for both production and dev
