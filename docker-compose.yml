@@ -4,5 +4,13 @@ services:
     build: .
     ports: 
       - "5000:3000"
-    environment: 
-      - PORT=3000
+    env_file: 
+      - ./.env
+  postgres:
+    image: postgres:13.3-alpine
+    env_file: 
+      - ./.env
+    volumes: 
+      - pgdata:/var/lib/postgresql/data
+volumes: 
+  pgdata:

@@ -1,0 +1,15 @@
+var1="run"
+var3="prod"
+var2="reset"
+if [ "$1" = "$var1" ]; then
+    docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+elif [ "$1" = "$var3" ]; then
+    docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build
+elif [ "$1" = "$var2" ]; then
+    docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+    docker rm -f $(docker ps -a -q)
+    docker volume rm $(docker volume ls -q)
+    docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+else
+    echo "Invalid Command"
+fi
