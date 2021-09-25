@@ -9,7 +9,6 @@ elif [ "$1" = "$var2" ]; then
     docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
     docker rm -f $(docker ps -a -q)
     docker volume rm $(docker volume ls -q)
-    docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 else
     echo "Invalid Command"
 fi

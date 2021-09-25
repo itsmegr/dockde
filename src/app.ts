@@ -1,5 +1,6 @@
 import express, {Application, Request, Response, NextFunction} from "express";
 import {Client} from "pg"
+import redis from "redis";
 const app : Application  = express();
 
 const client = new Client({
@@ -10,37 +11,88 @@ const client = new Client({
     port: process.env.POSTGRES_PORT as any as number,
 })
 
+//-----redis code goes from here
+const redisClient = redis.createClient({
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT as any as number,
+});
+redisClient.on("connect", () => {
+    console.log("Connected To Redis");
+});
+
+function inMemSet(key: string, value: string, expiryTime: number) {
+    return new Promise((resolve, reject) => {
+      redisClient.SET(key, value, "EX", expiryTime, (err, reply) => {
+        if (err) return reject(err);
+        resolve(reply);
+      });
+    });
+  }
+  
+function inMemGet(key: string) {
+    return new Promise((resolve, reject) => {
+      redisClient.GET(key, (err, reply) => {
+        if (err) return reject(err);
+        return resolve(reply);
+      });
+    });
+  }
+  
+function inMemDel(key: string) {
+    return new Promise((resolve, reject) => {
+      redisClient.DEL(key, (err, reply) => {
+        if (err) return reject(err);
+        return resolve(reply);
+      });
+    });
+  }
+//-----redis code ends here
+
+
+//------all routes
 type RouteHandler = (req : Request, res : Response, next : NextFunction)=> void;
 
 app.use(express.json());
-app.get("/", (req : Request, res : Response, next : NextFunction)=>{
+app.get("/api/", (req : Request, res : Response, next : NextFunction)=>{
     res.send("<h3> this is me Welcome to the new world!!,, this is govind</h3>");
 })
 
-app.get("/getAll", async (req : Request, res : Response, next : NextFunction)=>{
+app.get("/api/getAll", async (req : Request, res : Response, next : NextFunction)=>{
     try {
         const allStds = await client.query(`SELECT * FROM std`)
-        res.json(allStds.rows);
+        var jobs = [];
+        redisClient.keys('*', function (err, keys) {
+            res.json({
+                stdRes : allStds.rows,
+                redisData :  keys
+            });
+        })
     } catch (err) {
         next(err);
     }
 })
 
-app.get("/get", async(req : Request, res : Response, next : NextFunction)=>{
+app.get("/api/get", async(req : Request, res : Response, next : NextFunction)=>{
     try {
         const stdId = req.query.id;
         const stdRes = await client.query(`SELECT * FROM std WHERE rn = ${stdId}`)
-        res.json(stdRes.rows);
+        res.json({
+            stdRes : stdRes.rows,
+        });
 
     } catch (err) {
         next(err);
     }
 })
-app.post("/post", async(req : Request, res : Response, next : NextFunction)=>{
+app.post("/api/post", async(req : Request, res : Response, next : NextFunction)=>{
     try {
         const stdName = req.body.stdName;
         const postRes = await client.query(`INSERT INTO std (stdName) VALUES ('${stdName}') RETURNING *`);
-        res.send(postRes.rows)
+        const redisReply = await inMemSet(makeid(10), stdName,100000)
+        res.json({
+            postRes : postRes.rows,
+            redisReply : redisReply
+        })
 
     } catch (err) {
         next(err);
@@ -54,6 +106,7 @@ app.use((err : any, req : Request, res : Response, next : NextFunction)=>{
         msg : err.message
     });
 })
+//--------all routes end here
 
 
 //connecting  to db
@@ -85,4 +138,22 @@ connectToDB().then(res =>{
 
 .catch(err=>{
     console.log(err);
+    console.log("hello this is not for you");
+    
 })
+
+
+
+
+
+//use ful functions
+function makeid(length : number) : string {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
