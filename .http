@@ -1,0 +1,21 @@
+### Get the student
+GET http://localhost:5000/get?id=1
+
+
+### Get all students
+
+GET http://localhost:5000/getAll HTTP/1.1
+
+
+### Post student
+
+POST http://localhost:5000/post HTTP/1.1
+Content-Type: application/json
+
+{
+    "stdName" : "govind Rathore"
+}
+
+
+
+

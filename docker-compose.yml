@@ -6,11 +6,17 @@ services:
       - "5000:3000"
     env_file: 
       - ./.env
+    depends_on:
+      - postgres
   postgres:
     image: postgres:13.3-alpine
-    env_file: 
+    env_file:
       - ./.env
     volumes: 
       - pgdata:/var/lib/postgresql/data
 volumes: 
   pgdata:
+
+#1. to talk bw containers ip address can be replaced by service name
+#2. now "depends_on" just start the container first, it does not wait till it fully intialized so we
+#   will require to add some logic in our app to start main service, when its dependencies fully started

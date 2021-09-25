@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS std (
+    rn SERIAL PRIMARY KEY
+    stdName TEXT
+)
+
+SELECT * FROM std;
