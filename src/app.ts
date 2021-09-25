@@ -1,6 +1,7 @@
 import express, {Application, Request, Response, NextFunction} from "express";
 import {Client} from "pg"
 import redis from "redis";
+import cors from "cors"
 const app : Application  = express();
 
 const client = new Client({
@@ -52,6 +53,9 @@ function inMemDel(key: string) {
 //------all routes
 type RouteHandler = (req : Request, res : Response, next : NextFunction)=> void;
 
+app.enable("trust proxy");
+
+app.use(cors());
 app.use(express.json());
 app.get("/api/", (req : Request, res : Response, next : NextFunction)=>{
     res.send("<h3> this is me Welcome to the new world!!,, this is govind</h3>");
@@ -76,6 +80,8 @@ app.get("/api/get", async(req : Request, res : Response, next : NextFunction)=>{
     try {
         const stdId = req.query.id;
         const stdRes = await client.query(`SELECT * FROM std WHERE rn = ${stdId}`)
+        console.log("hey you came");
+        
         res.json({
             stdRes : stdRes.rows,
         });

@@ -1,9 +1,15 @@
 version: "3"
 services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - node-app
   node-app :
     build: .
-    ports: 
-      - "5000:3000"
     env_file: 
       - ./.env
     depends_on:
@@ -17,9 +23,13 @@ services:
       - pgdata:/var/lib/postgresql/data
   redis:
     image: redis
+    volumes:
+      - redis_data:/data
 volumes: 
   pgdata:
+  redis_data:
 
 #1. to talk bw containers ip address can be replaced by service name
 #2. now "depends_on" just start the container first, it does not wait till it fully intialized so we
 #   will require to add some logic in our app to start main service, when its dependencies fully started
+#3. after using nginx just expose nginx, no need to expose any other service
