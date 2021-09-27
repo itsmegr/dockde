@@ -10,6 +10,7 @@ services:
       - node-app
   node-app :
     build: .
+    image: node-app-image
     env_file: 
       - ./.env
     depends_on:
