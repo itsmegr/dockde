@@ -1,6 +1,18 @@
 version: "3"
-services: 
+services:
+  nginx:
+    deploy:
+      restart_policy:
+        condition: any
   node-app :
+    deploy:
+      replicas: 6
+      restart_policy:
+        condition: any
+      update_config:
+        parallelism: 2
+        delay: 15s
+        failure_action: rollback
     build: 
       context: .
       args: 
