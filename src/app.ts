@@ -96,6 +96,7 @@ app.post("/api/post", async(req : Request, res : Response, next : NextFunction)=
         const postRes = await client.query(`INSERT INTO std (stdName) VALUES ('${stdName}') RETURNING *`);
         const redisReply = await inMemSet(makeid(10), stdName,100000)
         res.json({
+            msg : "student created successfully",
             postRes : postRes.rows,
             redisReply : redisReply
         })

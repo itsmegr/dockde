@@ -16,6 +16,13 @@ Content-Type: application/json
     "stdName" : "govind Rathore"
 }
 
+###
+GET http://3.141.19.209/api/getAll HTTP/1.1
 
 
-
+### Post student
+POST http://3.141.19.209/api/post HTTP/1.1
+Content-Type: application/json
+{
+    "stdName" : "govind Rathore"
+}
