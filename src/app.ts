@@ -138,7 +138,7 @@ async function connectToDB(){
 //here making sure that server starts only after all dependencies has been started 
 connectToDB().then(res =>{
     app.listen(process.env.PORT, ()=>{
-        console.log("server statred");
+        console.log(`server statred ${process.env.PORT} port`);
     })
 })
 
