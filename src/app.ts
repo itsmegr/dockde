@@ -2,7 +2,7 @@ import express, {Application, Request, Response, NextFunction} from "express";
 import {Client} from "pg"
 import redis from "redis";
 import cors from "cors"
-const app : Application  = express();
+const app : Application  = express()
 
 const client = new Client({
     user: process.env.POSTGRES_USER,
