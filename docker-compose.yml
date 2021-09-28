@@ -10,7 +10,7 @@ services:
       - node-app
   node-app :
     build: .
-    image: node-app-image
+    image: 127.0.0.1:5000/node-app-image
     env_file: 
       - ./.env
     depends_on:
