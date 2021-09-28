@@ -68,7 +68,7 @@ app.get("/api/getAll", async (req : Request, res : Response, next : NextFunction
         redisClient.keys('*', function (err, keys) {
             console.log("respoose done");
             res.json({
-                msg :"here goes all the data!!!! change removed",
+                msg :"here goes all the data!!!! change done!!!",
                 stdRes : allStds.rows,
                 redisData :  keys
             });
