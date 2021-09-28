@@ -67,7 +67,7 @@ app.get("/api/getAll", async (req : Request, res : Response, next : NextFunction
         var jobs = [];
         redisClient.keys('*', function (err, keys) {
             res.json({
-                msg :"here goes all the data!!!! and this is changed again",
+                msg :"here goes all the data!!!! change removed",
                 stdRes : allStds.rows,
                 redisData :  keys
             });
