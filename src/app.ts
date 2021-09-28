@@ -66,6 +66,7 @@ app.get("/api/getAll", async (req : Request, res : Response, next : NextFunction
         const allStds = await client.query(`SELECT * FROM std`)
         var jobs = [];
         redisClient.keys('*', function (err, keys) {
+            console.log("respoose done");
             res.json({
                 msg :"here goes all the data!!!! change removed",
                 stdRes : allStds.rows,
