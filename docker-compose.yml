@@ -10,7 +10,7 @@ services:
       - node-app
   node-app :
     build: .
-    image: node-app-image
+    image: itsmegr/prod-demo
     env_file: 
       - ./.env
     depends_on:
