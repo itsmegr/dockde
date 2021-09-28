@@ -123,12 +123,6 @@ async function connectToDB(){
         try {
             await client.connect()
             console.log("Connected to db");
-            //migrating the db
-            const res = await client.query(`CREATE TABLE IF NOT EXISTS std (
-                rn SERIAL PRIMARY KEY,
-                stdName TEXT
-            )`)
-            console.log("DB migrated");
             break;
         } catch (err) {
             console.log("Failed Connecting To DB, retrying");
@@ -137,8 +131,21 @@ async function connectToDB(){
         }
     }
 }
+async function migrateDB(){
+    try {
+        const res = await client.query(`CREATE TABLE IF NOT EXISTS std (
+            rn SERIAL PRIMARY KEY,
+            stdName TEXT
+        )`)
+        console.log("DB migrated");
+    } catch (err) {
+        console.log("DB migration failed");
+        console.log(err);
+    }
+}
 //here making sure that server starts only after all dependencies has been started 
-connectToDB().then(res =>{
+connectToDB().then(async res =>{
+    await migrateDB()
     app.listen(process.env.PORT, ()=>{
         console.log(`server statred ${process.env.PORT} port`);
     })
